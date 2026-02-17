@@ -1,5 +1,12 @@
-stage('Run Backend Containers') {
-    steps {
+node {
+
+    stage('Build Backend Image') {
+        sh '''
+        docker build -t backend-app backend
+        '''
+    }
+
+    stage('Run Backend Containers') {
         sh '''
         docker network create lab-net || true
 
@@ -9,10 +16,8 @@ stage('Run Backend Containers') {
         docker run -d --name backend2 --network lab-net backend-app
         '''
     }
-}
 
-stage('Run Nginx Load Balancer') {
-    steps {
+    stage('Run Nginx Load Balancer') {
         sh '''
         docker rm -f nginx-lb || true
 
@@ -25,4 +30,3 @@ stage('Run Nginx Load Balancer') {
         '''
     }
 }
-
